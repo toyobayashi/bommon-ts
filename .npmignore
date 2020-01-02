@@ -1,0 +1,12 @@
+.gitignore
+package-lock.json
+node_modules
+/docs
+/temp
+tsconfig*.json
+.vscode
+/scripts
+*.d.ts.map
+api-extractor.json
+.eslint*
+gulpfile.*

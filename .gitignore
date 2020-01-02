@@ -1,0 +1,6 @@
+node_modules
+/lib
+tsdoc-metadata.json
+package-lock.json
+/temp
+/dist

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>bommon</title>
+</head>
+<body>
+  <script src="../dist/rollup/bommon.min.js"></script>
+  <script>
+    if (window.Promise) {
+      bommon.dynamicImport('./async1.js', 'async1').then(function (mod) {
+        console.log(mod);
+      });
+      bommon.dynamicImport('./async1.js', 'async1').then(function (mod) {
+        console.log(mod);
+      });
+    }
+
+    bommon.register('main', function (module, exports, require) {
+      document.write('main starting<br/>');
+      var a = require('a');
+      var b = require('b');
+      document.write('in main, a.done = ' + a.done + ', b.done = ' + b.done + '<br/>');
+
+      if (window.Promise) {
+        require.dynamicImport('./async3.js', 'async3').then(function (mod) {
+          console.log(mod);
+        });
+        require.dynamicImport('./async3.js', 'async3').then(function (mod) {
+          console.log(mod);
+        });
+      }
+    });
+
+    bommon.register('a', function (module, exports, require) {
+      document.write('a starting<br/>');
+      exports.done = false;
+      var b = require('b');
+      document.write('in a, b.done = ' + b.done + '<br/>');
+      exports.done = true;
+      document.write('a done<br/>');
+    });
+
+    bommon.register('b', function (module, exports, require) {
+      document.write('b starting<br/>');
+      exports.done = false;
+      var a = require('a');
+      document.write('in b, a.done = ' + a.done + '<br/>');
+      exports.done = true;
+      document.write('b done<br/>');
+    });
+
+    bommon.runAsMain('main');
+
+    if (window.Promise) {
+      bommon.dynamicImport('./async2.js', 'async2').then(function (mod) {
+        console.log(mod);
+      });
+      bommon.dynamicImport('./async2.js', 'async2').then(function (mod) {
+        console.log(mod);
+      });
+    }
+  </script>
+</body>
+</html>
