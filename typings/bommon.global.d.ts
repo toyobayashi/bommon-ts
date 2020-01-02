@@ -1,3 +1,4 @@
+declare namespace bommon {
 
 /**
  * Import a script file dynamicly.
@@ -6,7 +7,7 @@
  *
  * @public
  */
-export declare function dynamicImport(src: string, moduleId?: ModuleId): Promise<any>;
+export function dynamicImport(src: string, moduleId?: ModuleId): Promise<any>;
 
 /**
  * @remarks
@@ -14,15 +15,15 @@ export declare function dynamicImport(src: string, moduleId?: ModuleId): Promise
  *
  * @public
  */
-export declare type DynamicImportFunction = (src: string, moduleId?: ModuleId) => Promise<any>;
+export type DynamicImportFunction = (src: string, moduleId?: ModuleId) => Promise<any>;
 
 /**
  * Get the version code.
  * @public
  */
-export declare function getVersion(): string;
+export function getVersion(): string;
 
-declare class Module {
+class Module {
     id: ModuleId;
     parent: Module | null;
     loaded: boolean;
@@ -41,14 +42,14 @@ declare class Module {
  * ```
  * @public
  */
-export declare interface ModuleCache {
+export interface ModuleCache {
     [name: string]: Module;
 }
 
 /**
  * @public
  */
-export declare type ModuleId = string | number;
+export type ModuleId = string | number;
 
 /**
  * @remarks
@@ -61,7 +62,7 @@ export declare type ModuleId = string | number;
  *
  * @public
  */
-export declare interface ModuleMap {
+export interface ModuleMap {
     [name: string]: ModuleWrapper;
 }
 
@@ -71,7 +72,7 @@ export declare interface ModuleMap {
  *
  * @public
  */
-export declare type ModuleWrapper = (module: Module, exports: any, require: RequireFunction) => any;
+export type ModuleWrapper = (module: Module, exports: any, require: RequireFunction) => any;
 
 /**
  * Register a CommonJS module.
@@ -79,7 +80,7 @@ export declare type ModuleWrapper = (module: Module, exports: any, require: Requ
  * @param fn - {@link ModuleWrapper | CommonJS wrapper function}
  * @public
  */
-export declare function register(moduleId: ModuleId, fn: ModuleWrapper): void;
+export function register(moduleId: ModuleId, fn: ModuleWrapper): void;
 
 /**
  * @remarks
@@ -96,7 +97,7 @@ export declare function register(moduleId: ModuleId, fn: ModuleWrapper): void;
  *
  * @public
  */
-export declare interface RequireFunction {
+export interface RequireFunction {
     (moduleId: ModuleId): any;
     /** {@link ModuleMap} */
     modules: ModuleMap;
@@ -112,6 +113,8 @@ export declare interface RequireFunction {
  * @param moduleId - {@link ModuleId}
  * @public
  */
-export declare function runAsMain(moduleId: ModuleId): void;
+export function runAsMain(moduleId: ModuleId): void;
 
 export { }
+
+}

@@ -16,7 +16,7 @@ export declare function runAsMain(moduleId: ModuleId): void;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  moduleId | <code>ModuleId</code> | Module ID |
+|  moduleId | <code>ModuleId</code> | [ModuleId](./bommon.moduleid.md) |
 
 <b>Returns:</b>
 

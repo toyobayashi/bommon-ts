@@ -82,7 +82,15 @@ export const watch: gulp.TaskFunction = function watch (cb): void {
 }
 
 export const dts: gulp.TaskFunction = function dts (): Promise<void> {
-  return _spawn(_c('api-extractor'), ['run', '--local', '--verbose'])
+  return _spawn(_c('api-extractor'), ['run', '--local', '--verbose']).then(() => {
+    if (config.globalDeclaration) {
+      let dts = readFileSync(p(`typings/${config.library}.d.ts`), 'utf8')
+      dts = dts.replace(/declare\s/g, '')
+      dts = `declare namespace ${config.library} {\n${dts}`
+      dts += '\n}\n'
+      writeFileSync(p(`typings/${config.library}.global.d.ts`), dts, 'utf8')
+    }
+  })
 }
 
 export const doc: gulp.TaskFunction = function doc (): Promise<void> {

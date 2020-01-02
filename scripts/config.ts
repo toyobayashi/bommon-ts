@@ -21,6 +21,7 @@ export interface Configuration {
   webpackTarget?: KeyType<WebpackConfiguration, 'target'>
   rollupESModule?: boolean
   terserOptions?: MinifyOptions
+  globalDeclaration?: boolean
 }
 
 const config: Configuration = {
@@ -39,7 +40,8 @@ const config: Configuration = {
   rollupESModule: false,
   terserOptions: {
     ie8: true
-  }
+  },
+  globalDeclaration: true
 }
 
 export default config

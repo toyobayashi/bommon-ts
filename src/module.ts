@@ -78,7 +78,7 @@ export function createRequireFromModule (mod: Module): RequireFunction {
 
 /**
  * Run the entry module.
- * @param moduleId - Module ID
+ * @param moduleId - {@link ModuleId}
  * @public
  */
 export function runAsMain (moduleId: ModuleId): void {
