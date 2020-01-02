@@ -26,10 +26,8 @@
       function Module(id, parent) {
           this.id = id;
           this.parent = parent;
-          this.id = id;
           this.loaded = false;
           this.exports = {};
-          this.parent = parent;
           this.children = [];
       }
       Module.prototype.require = function (moduleId) {

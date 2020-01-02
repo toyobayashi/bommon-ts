@@ -8,10 +8,8 @@ class Module {
   public children: Module[]
 
   constructor (public id: ModuleId, public parent: Module | null) {
-    this.id = id
     this.loaded = false
     this.exports = {}
-    this.parent = parent
     this.children = []
   }
 
