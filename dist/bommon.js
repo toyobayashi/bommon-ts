@@ -184,4 +184,6 @@
   exports.register = register;
   exports.runAsMain = runAsMain;
 
+  exports.__esModule = true;
+
 })));

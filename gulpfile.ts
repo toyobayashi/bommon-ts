@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import * as gulp from 'gulp'
 import * as _webpack from 'webpack'
 import { spawn } from 'child_process'
-import { rollup as _rollup, RollupOutput, watch as _watch, WatcherOptions } from 'rollup'
+import { rollup as _rollup, watch as _watch, WatcherOptions } from 'rollup'
 import config from './scripts/config'
 import getWebpackConfig from './scripts/webpack.config'
 import getRollupConfig from './scripts/rollup.config'
@@ -52,8 +52,16 @@ export const webpack: gulp.TaskFunction = function webpack (cb): void {
   })
 }
 
-export const rollup: gulp.TaskFunction = function rollup (): Promise<RollupOutput[]> {
-  return Promise.all(rollupConfig.map(conf => _rollup(conf.input).then(bundle => bundle.write(conf.output))))
+export const rollup: gulp.TaskFunction = function rollup (): Promise<void> {
+  return Promise.all(rollupConfig.map(conf => _rollup(conf.input).then(bundle => bundle.write(conf.output)))).then(() => {
+    if (config.replaceESModule) {
+      rollupConfig.forEach(conf => {
+        let code = readFileSync(p(conf.output.file as string), 'utf8')
+        code = code.replace(/Object\.defineProperty\(\s*(.*?)\s*,\s*['"]__esModule['"]\s*,\s*{(\s*)value:\s*(.*?)(\s*)}\s*\)/g, '$1.__esModule$2=$4$3')
+        writeFileSync(p(conf.output.file as string), code, 'utf8')
+      })
+    }
+  })
 }
 
 export const bundle: gulp.TaskFunction = gulp.parallel(...(config.bundle.map(task => exports[task])))

@@ -19,7 +19,7 @@ export interface Configuration {
   rollupFormat?: ModuleFormat
   webpackLibraryTarget?: LibraryTarget
   webpackTarget?: KeyType<WebpackConfiguration, 'target'>
-  rollupESModule?: boolean
+  replaceESModule?: boolean
   terserOptions?: MinifyOptions
   globalDeclaration?: boolean
 }
@@ -37,7 +37,7 @@ const config: Configuration = {
   rollupFormat: 'umd',
   webpackLibraryTarget: 'umd',
   webpackTarget: 'web',
-  rollupESModule: false,
+  replaceESModule: true,
   terserOptions: {
     ie8: true
   },

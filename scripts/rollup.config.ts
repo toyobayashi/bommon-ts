@@ -36,8 +36,7 @@ export default function getRollupConfig (minify: boolean): { input: rollup.Input
       file: outputFilename,
       format: format,
       name: config.library,
-      exports: 'named',
-      esModule: config.rollupESModule === undefined ? true : config.rollupESModule
+      exports: 'named'
     }
   }
 }
