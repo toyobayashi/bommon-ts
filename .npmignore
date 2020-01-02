@@ -1,4 +1,5 @@
 .gitignore
+.gitattributes
 package-lock.json
 node_modules
 /docs
@@ -10,3 +11,4 @@ tsconfig*.json
 api-extractor.json
 .eslint*
 gulpfile.*
+/test
