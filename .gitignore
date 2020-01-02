@@ -3,4 +3,3 @@ node_modules
 tsdoc-metadata.json
 package-lock.json
 /temp
-/dist

@@ -28,7 +28,7 @@ const config: Configuration = {
   entry: 'src/index.ts',
   output: {
     webpack: 'dist/webpack',
-    rollup: 'dist/rollup',
+    rollup: 'dist',
     doc: 'docs/api'
   },
   bundle: ['rollup'],

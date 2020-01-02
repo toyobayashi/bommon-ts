@@ -39,6 +39,9 @@ export { anonymousModule }
 
 export function createDynamicImport (mod: Module): DynamicImportFunction {
   return function dynamicImport (src: string, moduleId?: ModuleId): Promise<any> {
+    if (typeof window === 'undefined') {
+      throw new Error('dynamicImport can not be called from non-browser environment.')
+    }
     const Promise = getPromiseConstructor()
     if (typeof src !== 'string') throw new TypeError('Script url must be a string.')
 

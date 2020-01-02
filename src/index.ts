@@ -39,7 +39,7 @@ export function dynamicImport (src: string, moduleId?: ModuleId): Promise<any> {
  * @public
  */
 export function getVersion (): string {
-  return '2.0.0'
+  return '2.0.1'
 }
 
 export { runAsMain }
