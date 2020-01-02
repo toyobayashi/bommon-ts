@@ -57,7 +57,14 @@ export const rollup: gulp.TaskFunction = function rollup (): Promise<void> {
     if (config.replaceESModule) {
       rollupConfig.forEach(conf => {
         let code = readFileSync(p(conf.output.file as string), 'utf8')
-        code = code.replace(/Object\.defineProperty\(\s*(.*?)\s*,\s*['"]__esModule['"]\s*,\s*{(\s*)value:\s*(.*?)(\s*)}\s*\)/g, '$1.__esModule$2=$4$3')
+        code = code.replace(/(,\s*)?Object\.defineProperty\s*\(\s*(.*?)\s*,\s*(['"])__esModule['"]\s*,\s*\{\s*value\s*:\s*(.*?)\s*\}\s*\)\s*;?/g, (_match, comma, exp, quote, value) => {
+          const iifeTemplate = (content: string): string => `!function(){${content}}()`
+          const content = (iife: boolean): string => `try{${iife ? 'return ' : ''}Object.defineProperty(${exp},${quote}__esModule${quote},{value:${value}})}catch(_){${iife ? 'return ' : ''}${exp}.__esModule=${value}${iife ? `,${exp}` : ''}}`
+          if (comma && comma.trim()) {
+            return `,${iifeTemplate(content(true))}`
+          }
+          return content(false)
+        })
         writeFileSync(p(conf.output.file as string), code, 'utf8')
       })
     }

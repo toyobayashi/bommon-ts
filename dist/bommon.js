@@ -184,6 +184,6 @@
   exports.register = register;
   exports.runAsMain = runAsMain;
 
-  exports.__esModule = true;
+  try{Object.defineProperty(exports,'__esModule',{value:true})}catch(_){exports.__esModule=true}
 
 })));
