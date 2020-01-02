@@ -1,2 +1,3 @@
 test/**/* linguist-detectable=false
 docs/**/* linguist-documentation
+dist/**/* linguist-vendored
