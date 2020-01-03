@@ -41,7 +41,7 @@ const config: Configuration = {
   terserOptions: {
     ie8: true
   },
-  globalDeclaration: true
+  globalDeclaration: false
 }
 
 export default config

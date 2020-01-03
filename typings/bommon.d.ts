@@ -1,3 +1,4 @@
+export as namespace bommon
 
 /**
  * Import a script file dynamicly.

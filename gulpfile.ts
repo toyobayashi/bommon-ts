@@ -108,12 +108,18 @@ export const watch: gulp.TaskFunction = function watch (cb): void {
 
 export const dts: gulp.TaskFunction = function dts (): Promise<void> {
   return _spawn(_c('api-extractor'), ['run', '--local', '--verbose']).then(() => {
+    const dtsPath = p(`typings/${config.library}.d.ts`)
+    const dts = readFileSync(dtsPath, 'utf8')
+    const format = config.rollupFormat || 'umd'
+    if (format === 'umd') {
+      const umddts = `export as namespace ${config.library}\n${dts}`
+      writeFileSync(dtsPath, umddts, 'utf8')
+    }
     if (config.globalDeclaration) {
-      let dts = readFileSync(p(`typings/${config.library}.d.ts`), 'utf8')
-      dts = dts.replace(/declare\s/g, '')
-      dts = `declare namespace ${config.library} {\n${dts}`
-      dts += '\n}\n'
-      writeFileSync(p(`typings/${config.library}.global.d.ts`), dts, 'utf8')
+      let globalDts = dts.replace(/declare\s/g, '')
+      globalDts = `declare namespace ${config.library} {\n${globalDts}`
+      globalDts += '\n}\n'
+      writeFileSync(p(`typings/${config.library}.global.d.ts`), globalDts, 'utf8')
     }
   })
 }
