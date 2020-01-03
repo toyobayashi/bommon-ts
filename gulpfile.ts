@@ -57,13 +57,23 @@ export const rollup: gulp.TaskFunction = function rollup (): Promise<void> {
     if (config.replaceESModule) {
       rollupConfig.forEach(conf => {
         let code = readFileSync(p(conf.output.file as string), 'utf8')
-        code = code.replace(/(,\s*)?Object\.defineProperty\s*\(\s*(.*?)\s*,\s*(['"])__esModule['"]\s*,\s*\{\s*value\s*:\s*(.*?)\s*\}\s*\)\s*;?/g, (_match, comma, exp, quote, value) => {
-          const iifeTemplate = (content: string): string => `!function(){${content}}()`
-          const content = (iife: boolean): string => `try{${iife ? 'return ' : ''}Object.defineProperty(${exp},${quote}__esModule${quote},{value:${value}})}catch(_){${iife ? 'return ' : ''}${exp}.__esModule=${value}${iife ? `,${exp}` : ''}}`
-          if (comma && comma.trim()) {
-            return `,${iifeTemplate(content(true))}`
+        code = code.replace(/(.\s*)?Object\.defineProperty\s*\(\s*(.*?)\s*,\s*(['"])__esModule['"]\s*,\s*\{\s*value\s*:\s*(.*?)\s*\}\s*\)\s*;?/g, (_match, token, exp, quote, value) => {
+          const iifeTemplate = (content: string, replaceVar?: string): string => {
+            if (replaceVar) {
+              return `(function(${replaceVar}){${content.replace(new RegExp(exp, 'g'), replaceVar)}})(${exp})`
+            }
+            return `(function(){${content}})()`
           }
-          return content(false)
+          const content = (iife: boolean): string => `try{${iife ? 'return ' : ''}Object.defineProperty(${exp},${quote}__esModule${quote},{value:${value}})}catch(_){${iife ? 'return ' : ''}${exp}.__esModule=${value}${iife ? `,${exp}` : ''}}`
+          const _token = token && token.trim()
+          if (!_token) return content(false)
+          if (_token === '{' || _token === ';') {
+            return `${token}${content(false)}`
+          } else if (_token === ')' || /^[a-zA-Z$_][a-zA-Z\d_]*$/.test(_token)) {
+            return `${token};${content(false)}`
+          } else {
+            return `${token}${iifeTemplate(content(true), exp === 'this' ? 'e' : '')}`
+          }
         })
         writeFileSync(p(conf.output.file as string), code, 'utf8')
       })
