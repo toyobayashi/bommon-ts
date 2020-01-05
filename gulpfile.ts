@@ -110,16 +110,22 @@ export const dts: gulp.TaskFunction = function dts (): Promise<void> {
   return _spawn(_c('api-extractor'), ['run', '--local', '--verbose']).then(() => {
     const dtsPath = p(`typings/${config.library}.d.ts`)
     const dts = readFileSync(dtsPath, 'utf8')
-    const format = config.rollupFormat || 'umd'
+    const format = config.format || 'umd'
     if (format === 'umd') {
-      const umddts = `export as namespace ${config.library}\n${dts}`
+      const umddts = `${dts}\nexport as namespace ${config.library}\n`
       writeFileSync(dtsPath, umddts, 'utf8')
-    }
-    if (config.globalDeclaration) {
+    } else if (format === 'cjs') {
+      let cjsDts = dts.replace(/declare\s/g, '')
+      cjsDts = cjsDts.replace(/export default (\S+);/g, 'export { $1 as default }')
+      cjsDts = `declare namespace ${config.library} {\n${cjsDts}`
+      cjsDts += `\n}\nexport = ${config.library}\n`
+      writeFileSync(dtsPath, cjsDts, 'utf8')
+    } else if (format === 'iife') {
       let globalDts = dts.replace(/declare\s/g, '')
+      globalDts = globalDts.replace(/export default (\S+);/g, 'export { $1 as default }')
       globalDts = `declare namespace ${config.library} {\n${globalDts}`
       globalDts += '\n}\n'
-      writeFileSync(p(`typings/${config.library}.global.d.ts`), globalDts, 'utf8')
+      writeFileSync(dtsPath, globalDts, 'utf8')
     }
   })
 }

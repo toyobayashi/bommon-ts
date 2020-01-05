@@ -1,4 +1,3 @@
-export as namespace bommon
 
 /**
  * Import a script file dynamicly.
@@ -116,3 +115,5 @@ export declare interface RequireFunction {
 export declare function runAsMain(moduleId: ModuleId): void;
 
 export { }
+
+export as namespace bommon

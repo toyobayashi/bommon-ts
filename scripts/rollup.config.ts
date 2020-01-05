@@ -10,7 +10,7 @@ const rollupNodeResolve: typeof import('@rollup/plugin-node-resolve').default = 
 
 export default function getRollupConfig (minify: boolean): { input: rollup.InputOptions; output: rollup.OutputOptions } {
   const outputFilename = minify ? p(config.output.rollup, `${config.library}.min.js`) : p(config.output.rollup, `${config.library}.js`)
-  const format = config.rollupFormat || 'umd'
+  const format = config.format || 'umd'
   return {
     input: {
       input: p(config.entry),
