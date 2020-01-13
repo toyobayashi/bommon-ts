@@ -5,6 +5,7 @@
   "main": "./lib/index.js",
   "typings": "./typings/bommon.d.ts",
   "scripts": {
+    "prepublish": "npm run build",
     "tsc": "gulp tsc",
     "dts": "gulp dts",
     "doc": "gulp doc",
@@ -20,6 +21,9 @@
   "keywords": [
     "commonjs"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/toyobayashi/bommon-ts.git"
