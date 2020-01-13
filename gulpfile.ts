@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync, existsSync } from 'fs'
 import * as gulp from 'gulp'
 import * as _webpack from 'webpack'
 import { spawn } from 'child_process'
@@ -31,8 +31,12 @@ function _spawn (command: string, args: string[]): Promise<void> {
   })
 }
 
-function _c (command: string): string {
-  return process.platform === 'win32' ? `${command}.cmd` : command
+function runNpmBin (bin: string, args: string[]): Promise<void> {
+  const localBin = p(`node_modules/.bin/${bin}${process.platform === 'win32' ? '.cmd' : ''}`)
+  if (existsSync(localBin)) {
+    return _spawn(localBin, args)
+  }
+  return _spawn(`${bin}${process.platform === 'win32' ? '.cmd' : ''}`, args)
 }
 
 export const lint: gulp.TaskFunction = function lint (): NodeJS.ReadWriteStream {
@@ -84,12 +88,12 @@ export const rollup: gulp.TaskFunction = function rollup (): Promise<void> {
 export const bundle: gulp.TaskFunction = gulp.parallel(...(config.bundle.map(task => exports[task])))
 
 export const tsc: gulp.TaskFunction = function tsc (): Promise<void> {
-  return _spawn(_c('tsc'), ['-p', 'tsconfig.json'])
+  return runNpmBin('tsc', ['-p', 'tsconfig.json'])
 }
 
 export const watch: gulp.TaskFunction = function watch (cb): void {
   gulp.watch('src/**/*.ts', { ignoreInitial: false }, lint)
-  _spawn(_c('tsc'), ['-w', '-p', 'tsconfig.json']).catch(err => console.log(err))
+  runNpmBin('tsc', ['-w', '-p', 'tsconfig.json']).catch(err => console.log(err))
   if (config.bundle.includes('webpack')) {
     _webpack(webpackConfig).watch({ aggregateTimeout: 200 }, (_err, stats) => console.log(stats.toString(webpackToStringOptions)))
   }
@@ -107,7 +111,7 @@ export const watch: gulp.TaskFunction = function watch (cb): void {
 }
 
 export const dts: gulp.TaskFunction = function dts (): Promise<void> {
-  return _spawn(_c('api-extractor'), ['run', '--local', '--verbose']).then(() => {
+  return runNpmBin('api-extractor', ['run', '--local', '--verbose']).then(() => {
     const dtsPath = p(`typings/${config.library}.d.ts`)
     const dts = readFileSync(dtsPath, 'utf8')
     const format = config.format || 'umd'
@@ -132,7 +136,7 @@ export const dts: gulp.TaskFunction = function dts (): Promise<void> {
 
 export const doc: gulp.TaskFunction = function doc (): Promise<void> {
   const outputDir = p(config.output.doc || 'docs/api')
-  return _spawn(_c('api-documenter'), ['markdown', '-i', './temp', '-o', outputDir]).then(() => {
+  return runNpmBin('api-documenter', ['markdown', '-i', './temp', '-o', outputDir]).then(() => {
     writeFileSync(p(outputDir, 'README.md'), readFileSync(p(outputDir, 'index.md'), 'utf8'), 'utf8')
   })
 }
